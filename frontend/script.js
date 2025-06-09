@@ -1,44 +1,105 @@
 document.addEventListener('DOMContentLoaded', () => {
     const userNameInput = document.getElementById('userName');
-    const faceImageInput = document.getElementById('faceImage');
     const diagnoseButton = document.getElementById('diagnoseButton');
     const resultDisplay = document.getElementById('resultDisplay');
     const passwordInput = document.getElementById('passwordInput');
     const retrieveDataButton = document.getElementById('retrieveDataButton');
     const savedDataDisplay = document.getElementById('savedDataDisplay');
 
-    // AI診断ボタンのクリックイベント
+    // Webカメラ関連の要素
+    const videoElement = document.getElementById('videoElement');
+    const takePhotoButton = document.getElementById('takePhotoButton');
+    const canvasElement = document.getElementById('canvasElement');
+    const capturedImage = document.getElementById('capturedImage');
+    const imageStatus = document.getElementById('imageStatus');
+    let stream; // カメラのストリームを保持
+    let photoTaken = false; // 写真が撮影されたかどうかのフラグ
+
+    // --- Webカメラの初期化 ---
+    async function setupCamera() {
+        try {
+            // ユーザーのメディアデバイス（カメラ）へのアクセスを要求
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoElement.srcObject = stream;
+            imageStatus.textContent = 'カメラ準備完了。写真を撮ってください。';
+            takePhotoButton.disabled = false; // カメラが準備できたらボタンを有効化
+        } catch (err) {
+            console.error("Webカメラへのアクセスに失敗しました:", err);
+            imageStatus.textContent = 'カメラへのアクセスが拒否されたか、利用できません。';
+            takePhotoButton.disabled = true; // エラー時はボタンを無効化
+            alert('Webカメラへのアクセスが必要です。ブラウザの設定で許可してください。');
+        }
+    }
+
+    // ページの読み込み時にカメラをセットアップ
+    setupCamera();
+
+    // --- 写真撮影ボタンのクリックイベント ---
+    takePhotoButton.addEventListener('click', () => {
+        if (!stream) {
+            alert('カメラが利用できません。');
+            return;
+        }
+
+        const context = canvasElement.getContext('2d');
+        // canvasのサイズをvideo要素に合わせる
+        canvasElement.width = videoElement.videoWidth;
+        canvasElement.height = videoElement.videoHeight;
+
+        // videoの現在のフレームをcanvasに描画
+        context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+
+        // canvasから画像データを取得 (Base64形式)
+        const imageDataURL = canvasElement.toDataURL('image/jpeg'); // JPEG形式で取得
+
+        // 取得した画像を表示
+        capturedImage.src = imageDataURL;
+        capturedImage.style.display = 'block';
+        imageStatus.textContent = '写真が撮影されました。';
+        photoTaken = true; // 写真が撮影されたことを示すフラグを設定
+
+        // 診断ボタンのテキストを変更（分かりやすく）
+        diagnoseButton.textContent = '撮影した写真でAI診断を開始';
+    });
+
+
+    // --- AI診断ボタンのクリックイベント ---
     diagnoseButton.addEventListener('click', async () => {
         const userName = userNameInput.value.trim();
-        const faceImage = faceImageInput.files[0];
+        const capturedImageURL = capturedImage.src; // 撮影した画像のデータURL
 
         if (!userName) {
             alert('名前を入力してください。');
             return;
         }
-        if (!faceImage) {
-            alert('顔写真を選択してください。');
+        if (!photoTaken || !capturedImageURL || capturedImageURL === '') {
+            alert('まず顔写真を撮影してください。');
             return;
         }
 
         resultDisplay.innerHTML = '<p>診断中...</p>';
         const formData = new FormData();
         formData.append('userName', userName);
-        formData.append('faceImage', faceImage);
+
+        // Base64データURLをBlobに変換してFormDataに追加
+        // fetch APIでBlobを送信できるようにする
+        const response = await fetch(capturedImageURL);
+        const blob = await response.blob();
+        formData.append('faceImage', blob, 'face_capture.jpeg'); // ファイル名も指定
 
         try {
             // Vercelデプロイ用にURLを相対パスに変更
-            const response = await fetch('/api/diagnose', {
+            const apiResponse = await fetch('/api/diagnose', {
                 method: 'POST',
                 body: formData,
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
+            if (!apiResponse.ok) {
+                const errorData = await apiResponse.json();
                 throw new Error(errorData.error || '診断に失敗しました。');
             }
 
-            const data = await response.json();
+            const data = await apiResponse.json();
             resultDisplay.innerHTML = `<p>${data.result}</p>`;
         } catch (error) {
             console.error('診断エラー:', error);
@@ -46,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // データ取得ボタンのクリックイベント
+    // --- データ取得ボタンのクリックイベント (変更なし) ---
     retrieveDataButton.addEventListener('click', async () => {
         const password = passwordInput.value;
 
