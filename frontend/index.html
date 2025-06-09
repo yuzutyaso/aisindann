@@ -15,17 +15,16 @@
             <input type="text" id="userName" placeholder="名前を入力してください" required>
         </div>
 
-        <div class="input-section">
-            <label for="faceImage">顔写真のアップロード:</label>
-            <input type="file" id="faceImage" accept="image/*" required>
+        <div class="camera-section">
+            <label>顔写真の撮影:</label>
+            <video id="videoElement" autoplay playsinline></video>
+            <button id="takePhotoButton">写真を撮る</button>
+            <canvas id="canvasElement" style="display:none;"></canvas> <img id="capturedImage" style="display:none; max-width:100%; border-radius: 5px; margin-top: 15px;"> <p id="imageStatus" style="text-align: center; color: #555; font-size: 0.9em; margin-top: 10px;">カメラの準備中...</p>
         </div>
-
         <button id="diagnoseButton">AI診断を開始</button>
 
         <div id="resultDisplay" class="result-display">
             </div>
-
-        <hr>
 
         
         <div class="input-section">
