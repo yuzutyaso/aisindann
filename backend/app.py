@@ -15,7 +15,7 @@ CORS(app)
 
 UPLOAD_FOLDER = 'uploads'
 DATA_FILE = 'data.json'
-PASSWORD = 'your_secure_password' # ここを実際のパスワードに変更してください！
+PASSWORD = '000728' # ここを実際のパスワードに変更してください！
 
 # アップロードフォルダが存在しない場合は作成
 if not os.path.exists(UPLOAD_FOLDER):
