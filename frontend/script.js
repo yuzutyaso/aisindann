@@ -27,7 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('faceImage', faceImage);
 
         try {
-            const response = await fetch('http://127.0.0.1:5000/diagnose', {
+            // Vercelデプロイ用にURLを相対パスに変更
+            const response = await fetch('/api/diagnose', {
                 method: 'POST',
                 body: formData,
             });
@@ -57,7 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
         savedDataDisplay.innerHTML = '<p>データを取得中...</p>';
 
         try {
-            const response = await fetch('http://127.0.0.1:5000/retrieve_data', {
+            // Vercelデプロイ用にURLを相対パスに変更
+            const response = await fetch('/api/retrieve_data', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
