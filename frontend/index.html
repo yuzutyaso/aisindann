@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI顔診断</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>AI顔診断</h1>
+
+        <div class="input-section">
+            <label for="userName">名前:</label>
+            <input type="text" id="userName" placeholder="名前を入力してください" required>
+        </div>
+
+        <div class="input-section">
+            <label for="faceImage">顔写真のアップロード:</label>
+            <input type="file" id="faceImage" accept="image/*" required>
+        </div>
+
+        <button id="diagnoseButton">AI診断を開始</button>
+
+        <div id="resultDisplay" class="result-display">
+            </div>
+
+        <hr>
+
+        <h2>保存されたデータを取得</h2>
+        <div class="input-section">
+            <label for="passwordInput">パスワード:</label>
+            <input type="password" id="passwordInput" placeholder="パスワードを入力してください" required>
+        </div>
+        <button id="retrieveDataButton">データを取得</button>
+
+        <div id="savedDataDisplay" class="saved-data-display">
+            </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
