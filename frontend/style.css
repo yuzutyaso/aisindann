@@ -133,3 +133,43 @@ hr {
         width: calc(100% - 20px);
     }
   }
+/* 省略（既存のCSSコード） */
+
+.camera-section {
+    margin-bottom: 20px;
+    text-align: center; /* ボタンなどを中央揃えに */
+}
+
+#videoElement {
+    width: 100%;
+    max-width: 480px; /* 動画の最大幅 */
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #eee; /* 動画が読み込まれるまでの背景 */
+    margin-bottom: 15px;
+    display: block; /* 中央揃えのため */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#takePhotoButton {
+    display: block;
+    width: 80%; /* 撮影ボタンの幅を調整 */
+    max-width: 250px;
+    padding: 12px;
+    background-color: #28a745; /* 緑色系のボタン */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 0 auto 20px auto; /* 中央揃えと下マージン */
+}
+
+#takePhotoButton:hover {
+    background-color: #218838;
+}
+
+/* その他の既存スタイルは変更なし */
